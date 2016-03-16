@@ -2,6 +2,8 @@
 
 Authors: [Nitish Shirish Keskar](http://users.iems.northwestern.edu/~nitish/) and [Albert S. Berahas](https://sites.google.com/a/u.northwestern.edu/albertsberahas/home)
 
+Please contact us if you have any questions, suggestions, requests or bug-reports.
+
 ## Introduction
 
 This is a package for solving an unconstrained minimization
