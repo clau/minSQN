@@ -97,7 +97,7 @@ for tuning_step = 1:number_of_tuning_steps
         w_s = zeros(problem.n,1);
         w_o = zeros(problem.n,1);
         % initialize the quasi-Newton class
-        qn = helpers.QuasiNewton(options.lbfgs_memory,'ADAGRAD');
+        qn = helpers.QuasiNewton(options.lbfgs_memory,options.H0);
         % create the Fisher container
         fisher_container = [];
         
@@ -154,11 +154,11 @@ for tuning_step = 1:number_of_tuning_steps
                         end
                         % update the curvature pairs
                         s = w_n - w_o;
-                        y = fisher_container * fisher_container' * s;
+                        y = fisher_container * (fisher_container' * s);
                         % if curvature estimate is less than sqrt of
                         % machine precision, SKIP the curvature pair update
                         rho = dot(s,y)/dot(y,y);
-                        if(rho>sqrt(eps))
+                        if(rho>1e-4)
                             qn.store(s,y);
                             w_o = w_n;
                         else

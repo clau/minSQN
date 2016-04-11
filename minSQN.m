@@ -323,6 +323,9 @@ switch options.method
         log_struct = methods.SQN_HvProd(problem,options,hyperparameters);
     % adaQN
     case {'adaQN'}
+        if(~ (strcmp(options.H0,'ADAGRAD') || strcmp(options.H0,'RMS')))
+            options.H0 = 'RMS';
+        end
         log_struct = methods.adaQN(problem,options,hyperparameters);
     % safeguarding........
     otherwise
