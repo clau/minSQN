@@ -2,8 +2,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                   ADAPTIVE QUASI-NEWTON (adaQN)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% This subroutine runs the adaQN method on unconstrained optimization 
+%a
+% This subroutine runs the adaQN method on unconstrained optimization
 % problem of the form,
 %                   min f(x) = sum f_i(x).
 % adaQN was originally designed to tackle Deep learning (non-convex)
@@ -55,7 +55,7 @@ if isempty(hyperparameters)
     range_for_alpha = [1e-6,1e2];
     range_for_L = [2,64];
     warning('Step length (alpha) and averaging length (L) has not been provided. Tuning these hyper-parameters for %d steps. The number of tuning steps can be changed using the options struct. Be advised: Tuning takes time.',number_of_tuning_steps)
-% else set the values of the hyperparameters
+    % else set the values of the hyperparameters
 else
     alpha = hyperparameters(1);
     L = hyperparameters(2);
@@ -88,11 +88,11 @@ for tuning_step = 1:number_of_tuning_steps
         % initialize the logger struct
         logger.fhist = [];
         
-        % initialize counter, iterations and number of curvature pair 
+        % initialize counter, iterations and number of curvature pair
         % updates
         k = 1;
         t = -1;
-        % initialize the arrays used for averaging iterates, and storing 
+        % initialize the arrays used for averaging iterates, and storing
         % the old value
         w_s = zeros(problem.n,1);
         w_o = zeros(problem.n,1);
@@ -101,17 +101,18 @@ for tuning_step = 1:number_of_tuning_steps
         % create the Fisher container
         fisher_container = [];
         
+        % randomly sample the data points labeled 'monitoring set'
+        indices_monitor_fun = helpers.randperm1(problem.m,options.batch_size_fun);
+        
         % loop over the epochs
         for epoch=1:options.epochs
             % initialize average function value
             avg_function_value = 0;
-            % randomly sample the data points labeled 'monitoring set'
-            indices_monitor_fun = helpers.randperm1(problem.m,options.batch_size_fun);
             
             % loop over the batches, batches per epoch =
             % (number of data points)/(batch size + (batch size [Hessian])/L)
             for batch=1:(floor(problem.m/options.batch_size)-options.batch_size_fun/options.batch_size)
-                % randomly sample (with replacement) |batch size| indices 
+                % randomly sample (with replacement) |batch size| indices
                 % from {1,...,n}
                 indices = helpers.randperm1(problem.m,options.batch_size);
                 % compute a stochastic gradient
@@ -119,7 +120,7 @@ for tuning_step = 1:number_of_tuning_steps
                 
                 % compute a stochastic function value and add to running
                 % sum
-                avg_function_value = avg_function_value + problem.funObj(w,indices)/(floor(problem.m/options.batch_size)-options.batch_size_fun/options.batch_size);                
+                avg_function_value = avg_function_value + problem.funObj(w,indices)/(floor(problem.m/options.batch_size)-options.batch_size_fun/options.batch_size);
                 
                 % append the new stochastic gradient to the Fisher
                 % container
@@ -127,11 +128,11 @@ for tuning_step = 1:number_of_tuning_steps
                 % if size of the container exceeds the capacity, delete the
                 % oldest stochastic gradient stored
                 if(size(fisher_container,2)>options.fisher_memory)
-                    fisher_container(:,1) = [];  
-                end                
-               % add the current iterate to the running sum over an epoch
+                    fisher_container(:,1) = [];
+                end
+                % add the current iterate to the running sum over an epoch
                 w_s = w_s + w;
-                % update the iterate (two-loop recursion to find search 
+                % update the iterate (two-loop recursion to find search
                 % direction)
                 w = w - alpha * qn.two_loop(sg);
                 
