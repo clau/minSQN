@@ -160,7 +160,7 @@ for tuning_step = 1:number_of_tuning_steps
                                 theta = 4 * rhs_sdbfgs / (rhs_sdbfgs/0.2 - lhs_sdbfgs);
                             end
                             r = theta * s + (1-theta)*qn.two_loop(y);
-                            qn.store(s,r);
+                            qn.store(r,y);
                             
                         else
                             % compute rho and check for sufficient curvature
