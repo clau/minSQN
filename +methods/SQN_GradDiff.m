@@ -180,11 +180,11 @@ for tuning_step = 1:number_of_tuning_steps
                         
                     end
                 else
-                    r = y;
+                    r = s;
                 end
                 % if limited memory is used, save the curvture pairs
                 if options.lbfgs_memory<Inf
-                    qn.store(s,r)
+                    qn.store(r,y)
                     % else, update the BFGS Hessian approximation
                 else
                     B = B + (r*r')/(s'*r) - (B*s*s'*B)/(s'*B*s) + delta*speye(problem.n);
