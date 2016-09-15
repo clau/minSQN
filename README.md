@@ -162,9 +162,7 @@ SGD:
 - Bottou, L., 1998. Online learning and stochastic approximations. On-line learning in neural networks, 17(9), p.142.
  
 SQN:
-- Byrd, R.H., Hansen, S.L., Nocedal, J. and Singer, Y., 2014.
-A stochastic quasi-Newton method for large-scale optimization.
-arXiv preprint arXiv:1401.7020.
+- Byrd, R. H., Hansen, S. L., Nocedal, J., & Singer, Y. (2016). A stochastic quasi-Newton method for large-scale optimization. SIAM Journal on Optimization, 26(2), 1008-1031.
 
 oBFGS:
 - Schraudolph, N.N., Yu, J. and Günter, S., 2007. A stochastic
@@ -177,8 +175,7 @@ oLBFGS:
 quasi-Newton method for online convex optimization. In
 International Conference on Artificial Intelligence and Statistics
 (pp. 436-443).
-- Mokhtari, A. and Ribeiro, A., 2014. Global convergence of online
-limited memory bfgs. arXiv preprint arXiv:1409.2045.
+- Mokhtari, A., & Ribeiro, A. (2015). Global convergence of online limited memory bfgs. Journal of Machine Learning Research, 16, 3151-3181.
 
 RES:
 - Mokhtari, A. and Ribeiro, A., 2014. Res: Regularized stochastic
@@ -186,14 +183,11 @@ bfgs algorithm. Signal Processing, IEEE Transactions on, 62(23),
 pp.6089-6104.
 
 SDBFGS:
-- Wang, X., Ma, S. and Liu, W., 2014. Stochastic Quasi-Newton
-Methods for Nonconvex Stochastic Optimization. arXiv preprint
-arXiv:1412.1196.
+- Wang, X., Ma, S., Goldfarb, D., & Liu, W. (2014). Stochastic Quasi-Newton Methods for Nonconvex Stochastic Optimization. arXiv preprint arXiv:1607.01231.
+
 
 adaQN:
-- Keskar, N.S. and Berahas, A.S., 2015. adaQN: An Adaptive
-Quasi-Newton Algorithm for Training RNNs. arXiv preprint
-arXiv:1511.01169.
+- Keskar, N. S., & Berahas, A. S. (2016). adaQN: An Adaptive Quasi-Newton Algorithm for Training RNNs. European Conference Machine Learning and Knowledge Discovery in Databases, (ECML PKDD 2016), Part I, Vol 9851, 1-16.
 
 
 
