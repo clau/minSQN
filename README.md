@@ -109,8 +109,8 @@ To solve a problem using minSQN, the user must follow 4 steps:
 
 
 ```
-X = randn(2000,500);
-y = 2*(randn(2000,1) > 0.5) - 1;
+X = randn(5000,500);
+y = 2*(randn(5000,1) > 0.5) - 1;
 problem = lossFunctions.LogReg(X,y);
 
 options = GenOptions();
@@ -132,8 +132,8 @@ where `fhist` is the history of average loss function values over each epoch, `h
 ### Example (with tuner):
 The process for running the methods with automatic tuning is similar to above except no hyperparameters are passed as input (as in Step 3 above). 
 ```
-X = randn(2000,500);
-y = 2*(randn(2000,1) > 0.5) - 1;
+X = randn(5000,500);
+y = 2*(randn(5000,1) > 0.5) - 1;
 problem = lossFunctions.LogReg(X,y);
 
 options = GenOptions();
