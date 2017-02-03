@@ -8,7 +8,7 @@ Please contact us if you have any questions, suggestions, requests or bug-report
 
 This is a package for solving an unconstrained minimization
 problem of the form,
-min f(x) = sum_i f_i(x).
+min f(x) = (1/n)*sum_i f_i(x).
 
 minSQN allows for the user to solve large-scale (sum-of-functions)
 optimization problems using one of 11 Stochastic Quasi-Newton methods.
@@ -184,7 +184,6 @@ pp.6089-6104.
 
 SDBFGS:
 - Wang, X., Ma, S., Goldfarb, D., & Liu, W. (2014). Stochastic Quasi-Newton Methods for Nonconvex Stochastic Optimization. arXiv preprint arXiv:1607.01231.
-
 
 adaQN:
 - Keskar, N. S., & Berahas, A. S. (2016). adaQN: An Adaptive Quasi-Newton Algorithm for Training RNNs. European Conference Machine Learning and Knowledge Discovery in Databases, (ECML PKDD 2016), Part I, Vol 9851, 1-16.
