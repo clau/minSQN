@@ -1,4 +1,4 @@
-classdef LogReg < lossFunctions.lossFunction
+classdef LogReg2 < lossFunctions.lossFunction
     % This is a class for carrying out optimization for a (Binary) Logistic
     % regression problem. Besides the construction, it has three methods:
     % funObj (which computes the function value), gradObj (which computes
@@ -18,27 +18,44 @@ classdef LogReg < lossFunctions.lossFunction
     
     properties
         X  % Data matrix
-        y  % Target
+        Y  % Target
         m  % Number of data points
-        n  % Number of features
+        c  % Number of classes
+        f  % Number of features per class
+        n  % Number of total features
         lambda  % Regularization parameter
         w0  % Initial starting point
     end
     methods
-        function obj = LogReg(X,y)
+        function obj = LogReg2(X,Y)
             % This function takes in the data matrix X and the targets y.
             % The data matrix is in the form [num_of_data_points x
             % num_of_features] and y is either {-1,1} with size
             % [num_of_data_points].
-            
+            X = [X ones(size(X, 1), 1)];
+
             obj.X = X;
-            obj.y = y;
-            obj.m = size(X,1);
-            obj.n = size(X,2);
-            obj.lambda = 1/obj.m;
-            obj.w0 = zeros(obj.n,1);%randn(obj.n,1);
+            obj.Y = Y;
+            obj.c = size(Y,2);  % classes
+            obj.f = size(X,2);  % features per class
+            obj.m = size(X,1);  % data points
+            obj.n = obj.f * obj.c;  % total features
+            obj.lambda = 1 / obj.m;
+            obj.w0 = zeros(obj.n, 1);%randn(obj.n,1);
         end
         
+        % predict
+        function p = predictObj(obj,w,indices)
+            if(nargin<3)
+                indices = 1:obj.m;
+            end
+            w_ = reshape(w, [obj.f, obj.c]);
+            before_softmax = obj.X(indices,:) * w_;
+            softmaxed = exp(before_softmax - max(before_softmax, [], 2));
+            p = softmaxed ./ sum(softmaxed, 2);
+        end
+
+        % loss
         function f = funObj(obj,w,indices)
             % Given an instantiated object called problem,
             % problem.funObj(w,indices) returns the function value at the
@@ -48,13 +65,15 @@ classdef LogReg < lossFunctions.lossFunction
             if(nargin<3)
                 indices = 1:obj.m;
             end
-            temp_save = exp(-1*(obj.y(indices)).*(obj.X(indices,:)*w));
-            f = 1/length(indices)*sum(log(1+temp_save)) + obj.lambda/2*norm(w)^2 ;
+            pred = obj.predictObj(w,indices);
+            loss = -log(pred) .* obj.Y(indices,:);
+            f = mean(sum(loss, 2));
             if(isnan(f))
                 error('Function Value is NaN')
             end
         end
         
+        % d_loss
         function g = gradObj(obj,w,indices)
             % Given an instantiated object called problem,
             % problem.gradObj(w,indices) returns the gradient value at the
@@ -65,12 +84,15 @@ classdef LogReg < lossFunctions.lossFunction
             if(nargin<3)
                 indices = 1:obj.m;
             end
-            
-            temp_save = exp(-1*(obj.y(indices)).*(obj.X(indices,:)*w));
-            b = temp_save ./ (1+temp_save);
-            g = -1/length(indices)*((b.*obj.y(indices))'*obj.X(indices,:))'+obj.lambda*w;
+            pred = obj.predictObj(w,indices);
+            delta = pred - obj.Y(indices,:);
+            df = zeros(obj.f, obj.c);
+            df(1:obj.f-1,:) = obj.X(indices,1:obj.f-1)' * delta / length(indices);
+            df(obj.f,:) = mean(delta, 1);
+            g = reshape(df, [obj.n, 1]);
         end
         
+        % hess
         function Hv = hessObj(obj,w,v,indices)
             % Given an instantiated object called problem,
             % problem.hessObj(w,v,indices) returns the Hessian-vector product 
@@ -83,6 +105,7 @@ classdef LogReg < lossFunctions.lossFunction
                 indices = 1:obj.m;
             end
             
+            error('Not implemented')
             temp_save = exp(-1*(obj.y(indices)).*(obj.X(indices,:)*w));
             b = temp_save ./ (1+temp_save);
             Hv = 1/length(indices)*obj.X(indices,:)'*(diag(b-b.^2)*(obj.X(indices,:)*v))+obj.lambda*v;

@@ -78,6 +78,8 @@ for tuning_step = 1:number_of_tuning_steps
         % initialize the logger struct
         logger.fhist = [];
         
+        logger.durations = [];
+
         % loop over the epochs
         for epoch=1:options.epochs
             avg_function_value = 0;
@@ -85,6 +87,8 @@ for tuning_step = 1:number_of_tuning_steps
             % loop over the batches, batches per epoch =
             % (number of data points)/(batch size)
             for batch=1:floor(problem.m/options.batch_size)
+                tic;
+
                 % randomly sample (with replacement) |batch size| indices from
                 %{1,...,n}
                 indices = helpers.randperm1(problem.m,options.batch_size);
@@ -97,6 +101,9 @@ for tuning_step = 1:number_of_tuning_steps
                 
                 % update the iterate
                 w = w - alpha * sg;
+
+                wtime = toc;
+                logger.durations = [logger.durations; wtime];
             end
             % append the current function value to the logger every epoch
             logger.fhist = [logger.fhist; avg_function_value];

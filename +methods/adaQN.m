@@ -87,6 +87,8 @@ for tuning_step = 1:number_of_tuning_steps
         
         % initialize the logger struct
         logger.fhist = [];
+
+        logger.durations = [];
         
         % initialize counter, iterations and number of curvature pair
         % updates
@@ -112,6 +114,8 @@ for tuning_step = 1:number_of_tuning_steps
             % loop over the batches, batches per epoch =
             % (number of data points)/(batch size + (batch size [Hessian])/L)
             for batch=1:(floor(problem.m/options.batch_size)-options.batch_size_fun/options.batch_size)
+                tic;
+
                 % randomly sample (with replacement) |batch size| indices
                 % from {1,...,n}
                 indices = helpers.randperm1(problem.m,options.batch_size);
@@ -149,13 +153,18 @@ for tuning_step = 1:number_of_tuning_steps
                         % the old function value, reset curvature pairs
                         if(problem.funObj(w_n,indices_monitor_fun)>1.01*problem.funObj(w_o,indices_monitor_fun))
                             % reset S and Y
-                            qn.reset()
+                            qn.reset();
                             w = w_o;
+                            fisher_container = [];
+                            k = k + 1;
+                            
+                            wtime = toc;
+                            logger.durations = [logger.durations; wtime];
                             continue;
                         end
                         % update the curvature pairs
                         s = w_n - w_o;
-                        y = fisher_container * (fisher_container' * s);
+                        y = fisher_container * (fisher_container' * s) / size(fisher_container, 2);
                         % if curvature estimate is less than sqrt of
                         % machine precision, SKIP the curvature pair update
                         rho = dot(s,y)/dot(y,y);
@@ -169,11 +178,12 @@ for tuning_step = 1:number_of_tuning_steps
                         % update the old averaged uterate
                         w_o = w_n;
                     end
-                    
-                    
                 end
                 % increment iteration counter
                 k = k + 1;
+
+                wtime = toc;
+                logger.durations = [logger.durations; wtime];
             end
             % append the current function value to the logger every epoch
             logger.fhist = [logger.fhist; avg_function_value];

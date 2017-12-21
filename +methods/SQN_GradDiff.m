@@ -69,7 +69,6 @@ else
     % regularization
     if ismember(name_of_method,{'oLBFGS','D-oLBFGS','oBFGS','D-oBFGS'})
         delta = 0;
-        
     else
         delta = hyperparameters(2);
     end
@@ -104,6 +103,8 @@ for tuning_step = 1:number_of_tuning_steps
         
         % initialize the logger struct
         logger.fhist = [];
+        logger.durations = [];
+
         
         % set Gamma parameter
         Gamma = 0.1*delta;
@@ -189,6 +190,10 @@ for tuning_step = 1:number_of_tuning_steps
                 else
                     B = B + (r*r')/(s'*r) - (B*s*s'*B)/(s'*B*s) + delta*speye(problem.n);
                 end
+
+                
+                wtime = toc;
+                logger.durations = [logger.durations; wtime];
             end
             % append the current function value to the logger every epoch
             logger.fhist = [logger.fhist; avg_function_value];
